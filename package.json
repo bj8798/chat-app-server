@@ -1,0 +1,41 @@
+{
+  "name": "chat-app-server",
+  "version": "1.0.0",
+  "description": "A real time chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "Bhargav Joshi",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongodb": "^3.6.0",
+    "mongoose": "^5.4.14",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bj8798/chat-app-server.git"
+  },
+  "keywords": [
+    "Node",
+    "Realtime",
+    "chat"
+  ],
+  "bugs": {
+    "url": "https://github.com/bj8798/chat-app-server/issues"
+  },
+  "homepage": "https://github.com/bj8798/chat-app-server#readme"
+}
