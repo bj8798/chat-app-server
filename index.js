@@ -7,7 +7,11 @@ const { MongoClient } = require('mongodb');
 
 const bodyParser = require('body-parser');
 
-const allowedOrigins = ['http://localhost:3000', 'http://192.168.0.105:3000'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://192.168.0.105:3000',
+  'http://192.168.0.106:3000',
+];
 
 const uri =
   'mongodb+srv://bhargav:B$$j8798@cluster0-yqxkh.mongodb.net/test?retryWrites=true&w=majority';
@@ -46,7 +50,15 @@ mongoClient.connect().then((client) => {
 
   // Middle ware for using the sessions
   app.use(
-    session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true })
+    session({
+      secret: 'ssshhhhh',
+      saveUninitialized: true,
+      resave: true,
+      cookie: {
+        secure: true,
+        maxAge: 60000,
+      },
+    })
   );
 
   app.use('', (req, res, next) => {
@@ -178,6 +190,7 @@ mongoClient.connect().then((client) => {
   });
 });
 
-http.listen(4000, () => {
-  console.log('listening on *:4000');
+const PORT = process.env.PORT || 4000;
+http.listen(PORT, () => {
+  console.log('listening on *:', PORT);
 });
