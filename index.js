@@ -54,10 +54,10 @@ mongoClient.connect().then((client) => {
       secret: 'ssshhhhh',
       saveUninitialized: true,
       resave: true,
-      secure: false,
       cookie: {
         httpOnly: false,
         sameSite: 'None',
+        secure: false,
       },
     })
   );
