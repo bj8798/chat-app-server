@@ -54,6 +54,10 @@ mongoClient.connect().then((client) => {
       secret: 'ssshhhhh',
       saveUninitialized: true,
       resave: true,
+      cookie: {
+        httpOnly: false,
+        sameSite: 'None',
+      },
     })
   );
 
