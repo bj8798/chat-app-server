@@ -54,10 +54,6 @@ mongoClient.connect().then((client) => {
       secret: 'ssshhhhh',
       saveUninitialized: true,
       resave: true,
-      cookie: {
-        secure: true,
-        maxAge: 60000,
-      },
     })
   );
 
