@@ -69,6 +69,7 @@ mongoClient.connect().then((client) => {
       return next();
     }
 
+    console.log('req.session:', req.session);
     if (!req.session.username) {
       return res.status(401).send({ message: 'Unauthorized access' });
     }
