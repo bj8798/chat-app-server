@@ -37,12 +37,12 @@ mongoClient.connect().then((client) => {
         if (!origin) return callback(null, true);
         const tokens = origin.split(':');
         const originWithoutPort = `${tokens[0]}${tokens[1]}`;
-        if (allowedOrigins.indexOf(originWithoutPort) === -1) {
-          const msg =
-            'The CORS policy for this site does not ' +
-            'allow access from the specified Origin.';
-          return callback(new Error(msg), false);
-        }
+        // if (allowedOrigins.indexOf(originWithoutPort) === -1) {
+        //   const msg =
+        //     'The CORS policy for this site does not ' +
+        //     'allow access from the specified Origin.';
+        //   return callback(new Error(msg), false);
+        // }
         return callback(null, true);
       },
       credentials: true,
