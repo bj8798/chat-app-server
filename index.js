@@ -1,4 +1,6 @@
 const app = require('express')();
+const express = require('express');
+const path = require('path');
 const session = require('express-session');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
@@ -8,9 +10,10 @@ const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://192.168.0.105:3000',
-  'http://192.168.0.106:3000',
+  'http://localhost',
+  'http://192.168.0.105',
+  'http://192.168.0.106',
+  'https://cryptic-journey-31189.herokuapp.com',
 ];
 
 const uri =
@@ -32,7 +35,9 @@ mongoClient.connect().then((client) => {
         // allow requests with no origin for postman reqests
         console.debug('Request came through:', origin);
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
+        const tokens = origin.split(':');
+        const originWithoutPort = `${tokens[0]}${tokens[1]}`;
+        if (allowedOrigins.indexOf(originWithoutPort) === -1) {
           const msg =
             'The CORS policy for this site does not ' +
             'allow access from the specified Origin.';
@@ -48,17 +53,14 @@ mongoClient.connect().then((client) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
+  app.use(express.static(path.join(__dirname, 'build')));
+
   // Middle ware for using the sessions
   app.use(
     session({
       secret: 'ssshhhhh',
       saveUninitialized: true,
       resave: true,
-      cookie: {
-        httpOnly: false,
-        sameSite: 'None',
-        secure: false,
-      },
     })
   );
 
@@ -189,6 +191,10 @@ mongoClient.connect().then((client) => {
     const message = req.body.message;
 
     sendMessage(fromUser, toUser, message);
+  });
+
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
   });
 });
 
