@@ -9,15 +9,10 @@ const { MongoClient } = require('mongodb');
 
 const bodyParser = require('body-parser');
 
-const allowedOrigins = [
-  'http://localhost',
-  'http://192.168.0.105',
-  'http://192.168.0.106',
-  'https://cryptic-journey-31189.herokuapp.com',
-];
+const allowedOrigins = ['https://cryptic-journey-31189.herokuapp.com'];
 
 const uri =
-  'mongodb+srv://bhargav:B$$j8798@cluster0-yqxkh.mongodb.net/test?retryWrites=true&w=majority';
+  'mongodb+srv://<username>:<password>cluster0-yqxkh.mongodb.net/test?retryWrites=true&w=majority';
 
 const mongoClient = new MongoClient(uri, { useUnifiedTopology: true });
 
@@ -36,13 +31,13 @@ mongoClient.connect().then((client) => {
         console.debug('Request came through:', origin);
         if (!origin) return callback(null, true);
         const tokens = origin.split(':');
-        const originWithoutPort = `${tokens[0]}${tokens[1]}`;
-        // if (allowedOrigins.indexOf(originWithoutPort) === -1) {
-        //   const msg =
-        //     'The CORS policy for this site does not ' +
-        //     'allow access from the specified Origin.';
-        //   return callback(new Error(msg), false);
-        // }
+        const originWithoutPort = `${tokens[0]}:${tokens[1]}`;
+        if (allowedOrigins.indexOf(originWithoutPort) === -1) {
+          const msg =
+            'The CORS policy for this site does not ' +
+            'allow access from the specified Origin.';
+          return callback(new Error(msg), false);
+        }
         return callback(null, true);
       },
       credentials: true,
@@ -65,8 +60,6 @@ mongoClient.connect().then((client) => {
   );
 
   app.use('', (req, res, next) => {
-    console.log('At auth middleware.');
-
     const authPaths = ['/', '/login', '/signup', '/test_session'];
     if (authPaths.includes(req.path)) {
       return next();
@@ -78,13 +71,6 @@ mongoClient.connect().then((client) => {
     }
 
     return next();
-  });
-
-  // Below is the previous code which need to be refactored
-  app.get('/', (req, res) => {
-    console.log('get request');
-    req.session.name = 'testname';
-    res.send('Done');
   });
 
   app.post('/login', (req, res) => {
@@ -132,7 +118,7 @@ mongoClient.connect().then((client) => {
     Object.keys(userSocketMap).forEach((username) => {
       activeUsers[username] = userSocketMap[username].fullname;
     });
-    console.log('activeUsers:', activeUsers);
+
     res.status(200).send({ activeUsers: activeUsers });
   });
 
@@ -152,7 +138,7 @@ mongoClient.connect().then((client) => {
         res.status(200).send({ message: 'Signed Up successfully' });
       })
       .catch((err) => {
-        console.log('Error while saving the User:', err);
+        console.error('Error while saving the User:', err);
         res.status(500).send({ message: 'Internal server error occurred' });
       });
   });
@@ -168,11 +154,7 @@ mongoClient.connect().then((client) => {
   io.on('connection', (socket) => {
     const query = socket.handshake.query;
     userSocketMap[query.username] = { socket, fullname: query.fullname };
-    console.log('userSocketMap: ', userSocketMap);
     socket.on('message_sent', (message) => {
-      console.log('message: ', message);
-      console.log('toUser Info:', userSocketMap[message.toUser]);
-
       if (!userSocketMap[message.toUser]) {
         return;
       }
